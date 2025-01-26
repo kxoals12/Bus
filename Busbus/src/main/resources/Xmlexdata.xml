@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<msgBody>
+<busRouteStationList>
+<centerYn>N</centerYn>
+<districtCd>3</districtCd>
+<mobileNoSi>38377</mobileNoSi>
+<regionName>인천</regionName>
+<stationId>164000377</stationId>
+<stationName>인천대학교공과대학</stationName>
+<toiletStYn>N</toiletStYn>
+<x>126.6345167</x>
+<y>37.3723833</y>
+<mapX>0.0</mapX>
+<mapY>0.0</mapY>
+<toiletStNm>N</toiletStNm>
+<adminName>인천광역시</adminName>
+<lastSepFlag>N</lastSepFlag>
+<sepFlag>N</sepFlag>
+<stationSeq>1</stationSeq>
+<turnSeq>7888</turnSeq>
+<turnYn>N</turnYn>
+</busRouteStationList>
+</msgBody>
