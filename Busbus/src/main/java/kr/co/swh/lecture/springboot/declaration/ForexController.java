@@ -48,7 +48,7 @@ public class ForexController {
 	@GetMapping("/client/{busLine_num}")
 	public ArrayList<HashMap<String, String>> retrieveExchangeValue(@PathVariable String busLine_num,
 			@RequestParam String page,
-			@RequestParam String perPage) throws Exception {
+			@RequestParam String perPage)  throws Exception {
 		String ApiURL = "http://api.gbis.go.kr/ws/rest/busrouteservice/page?serviceKey=1234567890&pageSize=" + perPage + "&pageNo=" + page + "&keyword=" + busLine_num;
 		
 
