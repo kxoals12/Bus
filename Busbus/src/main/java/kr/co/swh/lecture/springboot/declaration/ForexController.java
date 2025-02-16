@@ -104,18 +104,22 @@ public class ForexController {
 			Document b = TransXMLStringToDoc.convertStringToDocument(a);
 
 			String c = NextXMLReader.translate(b);
+			
+			ArrayList<HashMap<String, String>> done = new ArrayList<HashMap<String, String>>();
 
 			if (c == "Done") {
 				System.out.println("=======================================================");
-				return null;
+				System.out.println(done);
+				return done;
 			} else {
 			DOMSource domSource = NextXMLBuilder.getXMLFile(c);
 
 			result = NextUnmarshalFromDOMSource.unmar(domSource);
 			System.out.println("next/buslinenum");
+			System.out.println(",mvjiolkgmrnedi172834950659483"+result);
 			return result;
 			}
-
+   
 		} catch (Exception e) {
 			System.err.println("An error occurred in detailPage method: " + e.getMessage());
 			e.printStackTrace();
@@ -123,6 +127,7 @@ public class ForexController {
 			HashMap<String, String> errorResponse = new HashMap<>();
 			errorResponse.put("error", "Failed to process request: " + e.getMessage());
 			result.add(errorResponse);
+			
 			return result;
 		}
 		
