@@ -1,6 +1,7 @@
 package kr.co.swh.lecture.springboot.declaration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +32,6 @@ import kr.co.swh.lecture.springboot.detail.DetailXMLReader;
 import kr.co.swh.lecture.springboot.next.NextUnmarshalFromDOMSource;
 import kr.co.swh.lecture.springboot.next.NextXMLBuilder;
 import kr.co.swh.lecture.springboot.next.NextXMLReader;
-
 import javax.sql.rowset.spi.XmlReader;
 import javax.xml.bind.*;
 import javax.xml.transform.dom.DOMSource;
@@ -119,7 +119,6 @@ public class ForexController {
 			System.out.println(",mvjiolkgmrnedi172834950659483"+result);
 			return result;
 			}
-   
 		} catch (Exception e) {
 			System.err.println("An error occurred in detailPage method: " + e.getMessage());
 			e.printStackTrace();
@@ -165,6 +164,47 @@ public class ForexController {
 		
 
 	}
+	
+	
+	@GetMapping("/nova/{stationId}/a/{routeId}")
+	public ArrayList<HashMap<String, String>> nova(@PathVariable String stationId, String routeId ) {
+		ArrayList<HashMap<String, String>> result = new ArrayList<>();
+		System.out.println(123);
+//		System.out.println(stationId.split("a"));
+//		String[] stId = stationId.split("a");
+//		String gstid = stId[0];
+//		String rutid = stId[1];
+//		System.out.println(11);
+		try { 
+//			System.out.println(stId);
+			System.out.println(12);
+			String ApiURL = "http://api.gbis.go.kr/ws/rest/busarrivalservice/tv?serviceKey=1234567890&stationId=" + stationId + "&routeId=" + routeId;
+			System.out.println(ApiURL);
+			String a = ParsingHtml.a(ApiURL);
+			
 
+
+			Document b = TransXMLStringToDoc.convertStringToDocument(a);
+
+			String c = DetailXMLReader.translate(b);
+
+			DOMSource domSource = DetailXMLBuilder.getXMLFile(c);
+ 
+			result = DetailUnmarshalFromDOMSource.unmar(domSource);
+			return result;
+
+
+		} catch (Exception e) {
+			System.err.println("An error occurred in detailPage method: " + e.getMessage());
+			e.printStackTrace();
+
+			HashMap<String, String> errorResponse = new HashMap<>();
+			errorResponse.put("error", "Failed to process request: " + e.getMessage());
+			result.add(errorResponse);
+			return result;
+		}
+		
+
+	}
 
 }
