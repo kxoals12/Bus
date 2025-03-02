@@ -1,4 +1,4 @@
-package kr.co.swh.lecture.springboot.detail;
+package kr.co.swh.lecture.springboot.commonness;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -10,7 +10,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class DetailXMLBuilder {
+public class XMLBuilder {
 	//third
     public static DOMSource getXMLFile (String source) throws SAXException, IOException, ParserConfigurationException{
     	

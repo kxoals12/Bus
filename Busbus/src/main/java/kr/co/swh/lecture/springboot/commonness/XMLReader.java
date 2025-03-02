@@ -1,11 +1,11 @@
-package kr.co.swh.lecture.springboot.detail;
+package kr.co.swh.lecture.springboot.commonness;
 import org.w3c.dom.*;
 import java.io.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 import javax.xml.transform.dom.*;
 
-public class DetailXMLReader {
+public class XMLReader {
     public static String translate(Document xmlData) throws Exception {
         //second
     	
@@ -24,7 +24,6 @@ public class DetailXMLReader {
         String wreturn = "";
         
         // 각 <person> 태그를 출력
-        
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             
@@ -38,17 +37,24 @@ public class DetailXMLReader {
                 // XML 노드를 스트림으로 변환하여 출력
                 StringWriter writer = new StringWriter();
                 StreamResult result = new StreamResult(writer);
-                
                 DOMSource source = new DOMSource(node);
-                System.out.println(source);
                 transformer.transform(source, result);
 
+
+                
                 // 결과 출력
-                System.out.println(writer.toString());
+//                System.out.println(writer.toString());
                 wreturn += writer.toString();
                 
             }
         }
-		return wreturn;
+        System.out.println("[NextXMLReader]---- \n" + wreturn + "                                    ----[NextXMLReader]");
+        String done = "Done";
+        if (wreturn == "") {
+			System.out.println("=======================================================///////////");
+        	return done;
+        } else {
+        	return wreturn;
+        }
     }
 }

@@ -24,14 +24,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 
+import kr.co.swh.lecture.springboot.commonness.XMLReader;
+import kr.co.swh.lecture.springboot.commonness.XMLBuilder;
 import kr.co.swh.lecture.springboot.commonness.ParsingHtml;
 import kr.co.swh.lecture.springboot.commonness.TransXMLStringToDoc;
 import kr.co.swh.lecture.springboot.detail.DetailUnmarshalFromDOMSource;
-import kr.co.swh.lecture.springboot.detail.DetailXMLBuilder;
-import kr.co.swh.lecture.springboot.detail.DetailXMLReader;
 import kr.co.swh.lecture.springboot.next.NextUnmarshalFromDOMSource;
-import kr.co.swh.lecture.springboot.next.NextXMLBuilder;
-import kr.co.swh.lecture.springboot.next.NextXMLReader;
+import kr.co.swh.lecture.springboot.nova.NovaUnmarshalFromDOMSource;
+
 import javax.sql.rowset.spi.XmlReader;
 import javax.xml.bind.*;
 import javax.xml.transform.dom.DOMSource;
@@ -56,10 +56,10 @@ public class ForexController {
 
 		Document b = TransXMLStringToDoc.convertStringToDocument(a);
 
-		String c = NextXMLReader.translate(b);
+		String c = XMLReader.translate(b);
 		
 
-		DOMSource domSource = NextXMLBuilder.getXMLFile(c);
+		DOMSource domSource = XMLBuilder.getXMLFile(c);
 		
 		ArrayList<HashMap<String, String>> result = NextUnmarshalFromDOMSource.unmar(domSource);
 		
@@ -103,7 +103,7 @@ public class ForexController {
 
 			Document b = TransXMLStringToDoc.convertStringToDocument(a);
 
-			String c = NextXMLReader.translate(b);
+			String c = XMLReader.translate(b);
 			
 			ArrayList<HashMap<String, String>> done = new ArrayList<HashMap<String, String>>();
 
@@ -112,7 +112,7 @@ public class ForexController {
 				System.out.println(done);
 				return done;
 			} else {
-			DOMSource domSource = NextXMLBuilder.getXMLFile(c);
+			DOMSource domSource = XMLBuilder.getXMLFile(c);
 
 			result = NextUnmarshalFromDOMSource.unmar(domSource);
 			System.out.println("next/buslinenum");
@@ -144,9 +144,9 @@ public class ForexController {
 
 			Document b = TransXMLStringToDoc.convertStringToDocument(a);
 
-			String c = DetailXMLReader.translate(b);
+			String c = XMLReader.translate(b);
 
-			DOMSource domSource = DetailXMLBuilder.getXMLFile(c);
+			DOMSource domSource = XMLBuilder.getXMLFile(c);
  
 			result = DetailUnmarshalFromDOMSource.unmar(domSource);
 			return result;
@@ -167,42 +167,40 @@ public class ForexController {
 	
 	
 	@GetMapping("/nova/{stationId}/a/{routeId}")
-	public ArrayList<HashMap<String, String>> nova(@PathVariable String stationId, String routeId ) {
+	public ArrayList<HashMap<String, String>> nova(@PathVariable String stationId, @PathVariable String routeId ) {
 		ArrayList<HashMap<String, String>> result = new ArrayList<>();
-		System.out.println(123);
-//		System.out.println(stationId.split("a"));
-//		String[] stId = stationId.split("a");
-//		String gstid = stId[0];
-//		String rutid = stId[1];
-//		System.out.println(11);  
-		try { 
-//			System.out.println(stId);
-			System.out.println(12);
-			String ApiURL = "http://api.gbis.go.kr/ws/rest/busarrivalservice/tv?serviceKey=1234567890&stationId=" + stationId + "&routeId=" + routeId;
-			System.out.println(ApiURL);
-			String a = ParsingHtml.a(ApiURL);
-			
+		System.out.println(stationId);
+		System.out.println(routeId);
+		if (routeId == "a") { 
+			try { 
+				String ApiURL = "http://api.gbis.go.kr/ws/rest/busstationservice/info?serviceKey=1234567890&stationId=" + stationId;
+//				String ApiURL = "http://api.gbis.go.kr/ws/rest/busarrivalservice/tv?serviceKey=1234567890&stationId=" + stationId + "&routeId=" + routeId;
+				System.out.println(ApiURL); 
+				String a = ParsingHtml.a(ApiURL);
+
+				Document b = TransXMLStringToDoc.convertStringToDocument(a);
+
+				String c = XMLReader.translate(b);
+
+				DOMSource domSource = XMLBuilder.getXMLFile(c);
+	 
+				result = NovaUnmarshalFromDOMSource.unmar(domSource);
+				return result;
 
 
-			Document b = TransXMLStringToDoc.convertStringToDocument(a);
+			} catch (Exception e) {
+				System.err.println("An error occurred in detailPage method: " + e.getMessage());
+				e.printStackTrace();
 
-			String c = DetailXMLReader.translate(b);
-
-			DOMSource domSource = DetailXMLBuilder.getXMLFile(c);
- 
-			result = DetailUnmarshalFromDOMSource.unmar(domSource);
-			return result;
-
-
-		} catch (Exception e) {
-			System.err.println("An error occurred in detailPage method: " + e.getMessage());
-			e.printStackTrace();
-
-			HashMap<String, String> errorResponse = new HashMap<>();
-			errorResponse.put("error", "Failed to process request: " + e.getMessage());
-			result.add(errorResponse);
-			return result;
+				HashMap<String, String> errorResponse = new HashMap<>();
+				errorResponse.put("error", "Failed to process request: " + e.getMessage());
+				result.add(errorResponse);
+				return result;
+			}
 		}
+		return result;
+		
+		
 		
 
 	}
