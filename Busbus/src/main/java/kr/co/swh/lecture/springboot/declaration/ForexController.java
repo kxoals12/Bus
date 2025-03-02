@@ -174,7 +174,7 @@ public class ForexController {
 //		String[] stId = stationId.split("a");
 //		String gstid = stId[0];
 //		String rutid = stId[1];
-//		System.out.println(11);
+//		System.out.println(11);  
 		try { 
 //			System.out.println(stId);
 			System.out.println(12);
