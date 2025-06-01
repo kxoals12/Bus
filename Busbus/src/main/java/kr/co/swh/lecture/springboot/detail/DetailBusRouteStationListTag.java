@@ -62,6 +62,9 @@ public class DetailBusRouteStationListTag {
     @XmlElement(name = "turnYn")
     private String turnYn;
     
+    @XmlElement(name = "routeName")
+    private String routeName;
+    
     
     public DetailBusRouteStationListTag() {}
 
@@ -210,4 +213,12 @@ public class DetailBusRouteStationListTag {
         this.turnYn = newturnYn;
     }
     
+
+    public String getrouteName() {
+        return routeName;
+    }
+
+    public void setrouteName(String newrouteName) {
+        this.routeName = newrouteName;
+    }
 }

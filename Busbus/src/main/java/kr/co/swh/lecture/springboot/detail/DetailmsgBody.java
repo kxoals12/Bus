@@ -23,4 +23,16 @@ public class DetailmsgBody {
     public void setBusRouteStationListTag(List<DetailBusRouteStationListTag> busRouteStationLists) {
         this.busRouteStationLists = busRouteStationLists;
     }
+
+	@XmlElement(name = "busLocationList")
+    private List<DetailBusLocationListTag> busLocationLists;
+	
+	public List<DetailBusLocationListTag> getBusLocationListTag() {
+        return busLocationLists;
+    }
+	
+	public void setBusLocationListTag(List<DetailBusLocationListTag> busLocationLists) {
+        this.busLocationLists = busLocationLists;
+    }
+    
 }

@@ -11,20 +11,24 @@ import javax.xml.transform.dom.DOMSource;
 
 
 public class DetailUnmarshalFromDOMSource {
-    public static ArrayList<HashMap<String, String>> unmar(DOMSource domSource) throws JAXBException {
+    public static ArrayList<HashMap<String, String>> unmar(DOMSource domSource, String wyw) throws JAXBException {
         // JAXBContext 생성: 변환할 클래스(RouteList.class)를 지정
-        JAXBContext context = JAXBContext.newInstance(DetailmsgBody.class);
+
+    	JAXBContext context = JAXBContext.newInstance(DetailmsgBody.class);
 
         // Unmarshaller 생성
         Unmarshaller unmarshaller = context.createUnmarshaller();
-
+        
+        ArrayList<HashMap<String, String>> tagList = new ArrayList<>();	
+        
+        
+        if(wyw.equals("1")){
         // DOMSource를 이용하여 RouteList 객체로 변환
         DetailmsgBody msgBodyTag = (DetailmsgBody) unmarshaller.unmarshal(domSource);
 
         // 변환된 객체에서 BusRouteListTag 정보 추출
         List<DetailBusRouteStationListTag> busRouteList = msgBodyTag.getBusRouteStationListTag();
 
-        ArrayList<HashMap<String, String>> tagList = new ArrayList<>();
 
         for (DetailBusRouteStationListTag bus : busRouteList) {
             HashMap<String, String> tagMap = new HashMap<>();
@@ -46,13 +50,26 @@ public class DetailUnmarshalFromDOMSource {
             tagMap.put("stationSeq", bus.getstationSeq());
             tagMap.put("turnSeq", bus.getturnSeq());
             tagMap.put("turnYn", bus.getturnYn());
+            tagMap.put("routeName", bus.getrouteName());
 
             tagList.add(tagMap);
+        }}else {
+        	// DOMSource를 이용하여 RouteList 객체로 변환
+            DetailmsgBody msgBodyTag = (DetailmsgBody) unmarshaller.unmarshal(domSource);
+
+            // 변환된 객체에서 BusRouteListTag 정보 추출
+            List<DetailBusLocationListTag> busLocationList = msgBodyTag.getBusLocationListTag();
+
+
+
+            for (DetailBusLocationListTag bus : busLocationList) {
+                HashMap<String, String> tagMap = new HashMap<>();
+                tagMap.put("vehId", bus.getvehId());
+                tagMap.put("stationSeq", bus.getstationSeq());
+                tagMap.put("suddenEntry", bus.getsuddenEntry());
+                tagList.add(tagMap);
         }
-
-        System.out.println("----------------------");
-        System.out.println(tagList);
-
-        return tagList;
-    }
+      }
+		return tagList;
+  }
 }

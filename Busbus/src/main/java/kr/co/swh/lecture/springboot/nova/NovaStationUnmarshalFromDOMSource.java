@@ -12,7 +12,7 @@ import javax.xml.transform.dom.DOMSource;
 
 
 
-public class NovaUnmarshalFromDOMSource {
+public class NovaStationUnmarshalFromDOMSource {
     public static ArrayList<HashMap<String, String>> unmar(DOMSource domSource) throws JAXBException {
         // JAXBContext 생성: 변환할 클래스(RouteList.class)를 지정
         JAXBContext context = JAXBContext.newInstance(NovaStation.class);
@@ -25,8 +25,6 @@ public class NovaUnmarshalFromDOMSource {
 
         // 변환된 객체에서 BusRouteListTag 정보 추출
         List<NovaBusStationInfoTag> busStationInfo = novaStation.getBusStationInfoTag();
-        
-        System.out.println(busStationInfo);
 
         ArrayList<HashMap<String, String>> tagList = new ArrayList<>();
 
@@ -43,7 +41,6 @@ public class NovaUnmarshalFromDOMSource {
             tagMap.put("x", bus.getx());
             tagMap.put("y", bus.gety());
             tagMap.put("routeName", bus.getrouteName());
-
             tagList.add(tagMap);
         }
 

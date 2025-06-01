@@ -48,7 +48,7 @@ public class XMLReader {
                 
             }
         }
-        System.out.println("[NextXMLReader]---- \n" + wreturn + "                                    ----[NextXMLReader]");
+       
         String done = "Done";
         if (wreturn == "") {
 			System.out.println("=======================================================///////////");

@@ -24,13 +24,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 
+import com.jayway.jsonpath.internal.function.text.Length;
+
 import kr.co.swh.lecture.springboot.commonness.XMLReader;
 import kr.co.swh.lecture.springboot.commonness.XMLBuilder;
 import kr.co.swh.lecture.springboot.commonness.ParsingHtml;
 import kr.co.swh.lecture.springboot.commonness.TransXMLStringToDoc;
 import kr.co.swh.lecture.springboot.detail.DetailUnmarshalFromDOMSource;
 import kr.co.swh.lecture.springboot.next.NextUnmarshalFromDOMSource;
-import kr.co.swh.lecture.springboot.nova.NovaUnmarshalFromDOMSource;
+import kr.co.swh.lecture.springboot.nova.NovaArrivalUnmarshalFromDOMSource;
+import kr.co.swh.lecture.springboot.nova.NovaStationUnmarshalFromDOMSource;
 
 import javax.sql.rowset.spi.XmlReader;
 import javax.xml.bind.*;
@@ -51,6 +54,7 @@ public class ForexController {
 			@RequestParam String perPage)  throws Exception {
 		String ApiURL = "http://api.gbis.go.kr/ws/rest/busrouteservice/page?serviceKey=1234567890&pageSize=" + perPage + "&pageNo=" + page + "&keyword=" + busLine_num;
 		
+		System.out.println(ApiURL);
 
 		String a = ParsingHtml.a(ApiURL);
 
@@ -98,8 +102,9 @@ public class ForexController {
 		try {
 			String ApiURL = "http://api.gbis.go.kr/ws/rest/busrouteservice/page?serviceKey=1234567890&pageSize=" + perPage + "&pageNo=" + page + "&keyword=" + busLine_num;
 
+			System.out.println(ApiURL);
+			
 			String a = ParsingHtml.a(ApiURL);
-			System.out.println(a);
 
 			Document b = TransXMLStringToDoc.convertStringToDocument(a);
 
@@ -133,24 +138,47 @@ public class ForexController {
 
 	}
 	
-	@GetMapping("/detail/{routID}")
-	public ArrayList<HashMap<String, String>> detailPage(@PathVariable String routID) {
+	@GetMapping("/detail/{routID}/{wyw}")
+	public ArrayList<HashMap<String, String>> detailPage(@PathVariable String routID, @PathVariable String wyw) {
 		ArrayList<HashMap<String, String>> result = new ArrayList<>();
 		try {
-			String ApiURL = "http://api.gbis.go.kr/ws/rest/busrouteservice/station?serviceKey=1234567890&routeId=" + routID;
 
-			String a = ParsingHtml.a(ApiURL);
-			System.out.println(a);
+			if (wyw.equals("1")) {
+				String ApiURL = "http://api.gbis.go.kr/ws/rest/busrouteservice/station?serviceKey=1234567890&routeId=" + routID;
 
-			Document b = TransXMLStringToDoc.convertStringToDocument(a);
+				System.out.println(wyw + "wyw");
+				
+				System.out.println(ApiURL);
+			
+				String a = ParsingHtml.a(ApiURL);
 
-			String c = XMLReader.translate(b);
+				Document b = TransXMLStringToDoc.convertStringToDocument(a);
 
-			DOMSource domSource = XMLBuilder.getXMLFile(c);
- 
-			result = DetailUnmarshalFromDOMSource.unmar(domSource);
-			return result;
+				String c = XMLReader.translate(b);
 
+				DOMSource domSource = XMLBuilder.getXMLFile(c);
+				
+				result = DetailUnmarshalFromDOMSource.unmar(domSource, wyw);
+				return result;
+			} else {
+				System.out.println(wyw + "wydw");
+				String ApiURL = "http://api.gbis.go.kr/ws/rest/buslocationservice?serviceKey=1234567890&routeId=" + routID;
+
+				System.out.println(ApiURL);
+				
+				String a = ParsingHtml.a(ApiURL);
+
+				Document b = TransXMLStringToDoc.convertStringToDocument(a);
+
+				String c = XMLReader.translate(b);
+
+				DOMSource domSource = XMLBuilder.getXMLFile(c);
+				
+				result = DetailUnmarshalFromDOMSource.unmar(domSource,  wyw);
+				
+				System.out.println(result);
+				return result;
+			}
 
 		} catch (Exception e) {
 			System.err.println("An error occurred in detailPage method: " + e.getMessage());
@@ -167,15 +195,42 @@ public class ForexController {
 	
 	
 	@GetMapping("/nova/{stationId}/a/{routeId}")
-	public ArrayList<HashMap<String, String>> nova(@PathVariable String stationId, @PathVariable String routeId ) {
+	public ArrayList<HashMap<String, String>> nova(@PathVariable String stationId, @PathVariable String routeId, @RequestParam String countOrd ) {
 		ArrayList<HashMap<String, String>> result = new ArrayList<>();
 		System.out.println(stationId);
 		System.out.println(routeId);
-		if (routeId == "a") { 
+		if (routeId.length() == 1) { 
 			try { 
 				String ApiURL = "http://api.gbis.go.kr/ws/rest/busstationservice/info?serviceKey=1234567890&stationId=" + stationId;
-//				String ApiURL = "http://api.gbis.go.kr/ws/rest/busarrivalservice/tv?serviceKey=1234567890&stationId=" + stationId + "&routeId=" + routeId;
-				System.out.println(ApiURL); 
+				
+				System.out.println(ApiURL);
+				
+				String a = ParsingHtml.a(ApiURL);
+
+				Document b = TransXMLStringToDoc.convertStringToDocument(a);
+
+				String c = XMLReader.translate(b);
+
+				DOMSource domSource = XMLBuilder.getXMLFile(c);
+				
+				result = NovaStationUnmarshalFromDOMSource.unmar(domSource);
+				
+				return result;
+
+			} catch (Exception e) {
+				System.err.println("An error occurred in detailPage method: " + e.getMessage());
+				e.printStackTrace();
+
+				HashMap<String, String> errorResponse = new HashMap<>();
+				errorResponse.put("error", "Failed to process request: " + e.getMessage());
+				result.add(errorResponse);
+				return result;
+			}
+		} else{
+			try { 
+				String ApiURL = "http://api.gbis.go.kr/ws/rest/busarrivalservice/tv?serviceKey=1234567890&stationId="+ stationId + "&routeId=" + routeId + "&staOrder=1" ;
+//				String ApiURL = "http://api.gbis.go.kr/ws/rest/busarrivalservice/tv?serviceKey=1234567890&stationId="+ stationId + "&routeId=" + routeId + "&staOrder=" + countOrd ;
+				System.out.println(ApiURL + "--------------ApiURL");
 				String a = ParsingHtml.a(ApiURL);
 
 				Document b = TransXMLStringToDoc.convertStringToDocument(a);
@@ -184,7 +239,7 @@ public class ForexController {
 
 				DOMSource domSource = XMLBuilder.getXMLFile(c);
 	 
-				result = NovaUnmarshalFromDOMSource.unmar(domSource);
+				result = NovaArrivalUnmarshalFromDOMSource.unmar(domSource);
 				return result;
 
 
@@ -198,11 +253,6 @@ public class ForexController {
 				return result;
 			}
 		}
-		return result;
-		
-		
-		
-
 	}
 
 }

@@ -8,16 +8,16 @@ import java.util.List;
 
 @XmlRootElement(name = "msgBody")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class NovaStation {
-	@XmlElement(name = "busStationInfo")
-    private List<NovaBusStationInfoTag> busStationInfos;
+public class NovaArrival {
+	@XmlElement(name = "busArrivalItem")
+    private List<NovaBusArrivalItemTag> busArrivalItems;
 
-    public List<NovaBusStationInfoTag> getBusStationInfoTag() {
-        return busStationInfos;
+    public List<NovaBusArrivalItemTag> getBusArrivalItemTag() {
+        return busArrivalItems;
     }
 
-    public void setPersons(List<NovaBusStationInfoTag> busStationInfos) {
-        this.busStationInfos = busStationInfos;
+    public void setPersons(List<NovaBusArrivalItemTag> busStationInfos) {
+        this.busArrivalItems = busStationInfos;
     }
 
 	

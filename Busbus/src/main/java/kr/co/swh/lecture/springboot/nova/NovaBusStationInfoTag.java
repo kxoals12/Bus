@@ -41,10 +41,13 @@ public class NovaBusStationInfoTag {
     @XmlElement(name = "routeName")
     private String routeName;
     
+
     
     public NovaBusStationInfoTag() {}
 
     // Getter 및 Setter
+    
+    
     public String getcenterYn() {
         return centerYn;
     }
